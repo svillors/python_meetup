@@ -1,5 +1,7 @@
 from telegram import ReplyKeyboardMarkup
-from .connection import ConnectionScene
+
+from .scene_router import SceneRouter
+
 
 class MainMenuScene:
     def handle(self, update, context):
@@ -7,9 +9,14 @@ class MainMenuScene:
         keyboard = [
             ['Расписание мероприятия'],
             ['Знакомства'],
-            ['Задать вопрос спикеру']
+            ['Задать вопрос спикеру'],
+            ['Поддержать организаторов']
         ]
-        markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=False)
+        markup = ReplyKeyboardMarkup(
+            keyboard,
+            resize_keyboard=True,
+            one_time_keyboard=False
+        )
         update.message.reply_text('Выбирай', reply_markup=markup)
 
     def process(self, update, context):
@@ -19,9 +26,13 @@ class MainMenuScene:
             update.message.reply_text('вот расписание')
 
         elif text == 'Знакомства':
-            scene = ConnectionScene()
+            scene = SceneRouter.get('connection')
             scene.handle(update, context)
 
         elif text == 'Задать вопрос спикеру':
             scene = None
+            scene.handle(update, context)
+
+        elif text == 'Поддержать организаторов':
+            scene = SceneRouter.get('donate')
             scene.handle(update, context)
