@@ -1,6 +1,9 @@
 from telegram import ReplyKeyboardMarkup
-from .connection import ConnectionScene
 
+
+from .connection import ConnectionScene
+from .schedule import ScheduleScene
+from .ask_question import AskQuestionScene
 class MainMenuScene:
     def handle(self, update, context):
         context.user_data['scene'] = self
@@ -16,12 +19,13 @@ class MainMenuScene:
         text = update.message.text
 
         if text == 'Расписание мероприятия':
-            update.message.reply_text('вот расписание')
+            scene = ScheduleScene()
+            scene.handle(update, context)
 
         elif text == 'Знакомства':
             scene = ConnectionScene()
             scene.handle(update, context)
 
         elif text == 'Задать вопрос спикеру':
-            scene = None
+            scene = AskQuestionScene
             scene.handle(update, context)
