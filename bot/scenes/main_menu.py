@@ -23,14 +23,15 @@ class MainMenuScene:
         text = update.message.text
 
         if text == 'Расписание мероприятия':
-            update.message.reply_text('вот расписание')
+            scene = SceneRouter.get('schedule')
+            scene.handle(update, context)
 
         elif text == 'Знакомства':
             scene = SceneRouter.get('connection')
             scene.handle(update, context)
 
         elif text == 'Задать вопрос спикеру':
-            scene = None
+            scene = SceneRouter.get('ask_question')
             scene.handle(update, context)
 
         elif text == 'Поддержать организаторов':

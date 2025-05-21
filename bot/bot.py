@@ -14,12 +14,16 @@ from scenes.scene_router import SceneRouter
 from scenes.connection import ConnectionScene
 from scenes.donate import DonateScene
 from scenes.main_menu import MainMenuScene
+from scenes.ask_question import AskQuestionScene
+from scenes.schedule import ScheduleScene
 
 
 SceneRouter.scenes = {
     'main_menu': MainMenuScene,
     'connection': ConnectionScene,
-    'donate': DonateScene
+    'donate': DonateScene,
+    'ask_question': AskQuestionScene,
+    'schedule': ScheduleScene
 }
 
 
