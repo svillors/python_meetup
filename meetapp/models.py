@@ -57,6 +57,9 @@ class Speaker(models.Model):
         verbose_name = 'Спикер'
         verbose_name_plural = 'Спикеры'
 
+    def __str__(self):
+        return self.name
+
 
 class Meetup(models.Model):
 
@@ -120,7 +123,7 @@ class Event(models.Model):
         verbose_name_plural = 'События'
 
     def __str__(self):
-        return f'Событие {self.title} {self.meetup}'
+        return self.title
 
 
 class Question(models.Model):
@@ -139,6 +142,10 @@ class Question(models.Model):
         User,
         on_delete=models.CASCADE,
         verbose_name='Спрашивающий'
+    )
+    time = models.DateTimeField(
+        'Время появления вопроса',
+        auto_now=True
     )
 
     class Meta:
