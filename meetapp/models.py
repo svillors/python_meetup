@@ -15,6 +15,11 @@ class User(models.Model):
         'Имя',
         max_length=100
     )
+    about_me = models.CharField(
+        'Анкета о себе',
+        max_length=300,
+        blank=True
+    )
     role = models.CharField(
         'Роль',
         choices=ROLE_CHOICES,
