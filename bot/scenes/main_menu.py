@@ -1,5 +1,7 @@
 from telegram import ReplyKeyboardMarkup
 
+from .scene_router import SceneRouter
+
 
 from .connection import ConnectionScene
 from .schedule import ScheduleScene
@@ -16,13 +18,19 @@ class MainMenuScene:
         keyboard = [
             ['Расписание мероприятия'],
             ['Знакомства'],
-            ['Задать вопрос спикеру']
+            ['Задать вопрос спикеру'],
+            ['Поддержать организаторов']
         ]
 
         if update.effective_user.id in SPEAKER_IDS:
             keyboard.append(['Посмотреть вопросы'])
 
-        markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=False)
+        markup = ReplyKeyboardMarkup(
+            keyboard,
+            resize_keyboard=True,
+            one_time_keyboard=False
+        )
+
         update.message.reply_text('Выбирай', reply_markup=markup)
 
 
@@ -31,15 +39,19 @@ class MainMenuScene:
         text = update.message.text
 
         if text == 'Расписание мероприятия':
-            scene = ScheduleScene()
+            scene = SceneRouter.get('schedule')
             scene.handle(update, context)
 
         elif text == 'Знакомства':
-            scene = ConnectionScene()
+            scene = SceneRouter.get('connection')
             scene.handle(update, context)
 
         elif text == 'Задать вопрос спикеру':
-            scene = AskQuestionScene
+            scene = SceneRouter.get('ask_question')
+            scene.handle(update, context)
+
+        elif text == 'Поддержать организаторов':
+            scene = SceneRouter.get('donate')
             scene.handle(update, context)
 
         elif text == 'Посмотреть вопросы':
