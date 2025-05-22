@@ -10,6 +10,9 @@ from telegram.ext import (
 )
 from dotenv import load_dotenv
 
+from utils.init_django import init_django
+init_django()
+
 from scenes.scene_router import SceneRouter
 from scenes.connection import ConnectionScene
 from scenes.donate import DonateScene
