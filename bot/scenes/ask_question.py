@@ -1,8 +1,7 @@
-from scenes.main_menu import MainMenuScene
-
-
 class AskQuestionScene:
     def handle(self, update, context):
+        from scenes.main_menu import MainMenuScene
+        
         context.user_data['scene'] = self
         context.user_data['stage'] = 'awaiting_question'
         update.message.reply_text('Сейчас выступает спикер. Напишите ваш вопрос:')

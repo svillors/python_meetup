@@ -1,8 +1,7 @@
-from scenes.main_menu import MainMenuScene
-
-
 class ScheduleScene:
     def handle(self, update, context):
+        from scenes.main_menu import MainMenuScene
+
         context.user_data['scene'] = self
         update.message.reply_text(
             '📅 Расписание:\n\n'

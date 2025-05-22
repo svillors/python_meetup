@@ -1,7 +1,8 @@
+import os
 from telegram import ReplyKeyboardMarkup
+from dotenv import load_dotenv
 
 from .scene_router import SceneRouter
-
 
 from .connection import ConnectionScene
 from .schedule import ScheduleScene
@@ -9,7 +10,9 @@ from .ask_question import AskQuestionScene
 from .speaker_view import SpeakerQuestionViewerScene
 
 
-SPEAKER_IDS = []
+load_dotenv()
+
+SPEAKER_IDS = list(map(int, os.getenv("SPEAKER_IDS", "").split(",")))
 
 
 class MainMenuScene:
