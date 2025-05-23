@@ -16,14 +16,14 @@ class DonateScene:
         context.user_data['scene'] = self
         context.user_data['stage'] = 'set_price'
 
-        keyboard = [
+        keyboard_donate = [
             ['200 ₽'], ['500 ₽'],
             ['1000 ₽'], ['2000 ₽'],
             ['Ввести свою сумму'],
             ['Отмена']
         ]
         markup = ReplyKeyboardMarkup(
-            keyboard,
+            keyboard_donate,
             resize_keyboard=True,
             one_time_keyboard=True
         )
@@ -36,10 +36,10 @@ class DonateScene:
         text = update.message.text
         stage = context.user_data['stage']
 
-        keyboard = [
+        keyboard_cancel = [
             ['Отмена']
         ]
-        cancel_markup = ReplyKeyboardMarkup(keyboard)
+        cancel_markup = ReplyKeyboardMarkup(keyboard_cancel)
         if stage == 'set_price':
             if text == 'Отмена':
                 scene = SceneRouter.get('main_menu')

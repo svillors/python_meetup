@@ -46,7 +46,11 @@ def universal_handler(update, context):
 def callback_handler(update, context):
     scene = context.user_data.get('scene')
     if not scene:
-        update.message.reply_text('что-то сломалось, чини')
+        if update.callback_query:
+            update.callback_query.answer('что-то сломалось, чини')
+        elif update.message:
+            update.message.reply_text('что-то сломалось, чини')
+        return
     scene.process_callback(update, context)
 
 
