@@ -36,6 +36,8 @@ class MainMenuScene:
 
         update.message.reply_text('Выбирай', reply_markup=markup)
 
+        message = update.message or update.callback_query.message
+        message.reply_text('\u2060', reply_markup=markup)
 
 
     def process(self, update, context):

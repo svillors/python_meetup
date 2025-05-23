@@ -10,6 +10,9 @@ from telegram.ext import (
 )
 from dotenv import load_dotenv
 
+from utils.init_django import init_django
+init_django()
+
 from scenes.scene_router import SceneRouter
 from scenes.connection import ConnectionScene
 from scenes.donate import DonateScene
@@ -43,7 +46,11 @@ def universal_handler(update, context):
 def callback_handler(update, context):
     scene = context.user_data.get('scene')
     if not scene:
-        update.message.reply_text('что-то сломалось, чини')
+        if update.callback_query:
+            update.callback_query.answer('что-то сломалось, чини')
+        elif update.message:
+            update.message.reply_text('что-то сломалось, чини')
+        return
     scene.process_callback(update, context)
 
 
