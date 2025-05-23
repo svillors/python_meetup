@@ -1,7 +1,7 @@
 class SpeakerQuestionViewerScene:
     def handle(self, update, context):
         from scenes.main_menu import MainMenuScene
-        
+
         context.user_data['scene'] = self
 
         questions = context.bot_data.get('questions', [])

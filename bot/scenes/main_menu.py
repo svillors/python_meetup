@@ -1,65 +1,67 @@
-import os
-from telegram import ReplyKeyboardMarkup
-from dotenv import load_dotenv
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton
+from meetapp.models import User
 
 from .scene_router import SceneRouter
-
-from .connection import ConnectionScene
-from .schedule import ScheduleScene
-from .ask_question import AskQuestionScene
-from .speaker_view import SpeakerQuestionViewerScene
-
-
-load_dotenv()
-
-SPEAKER_IDS = list(map(int, os.getenv("SPEAKER_IDS", "").split(",")))
 
 
 class MainMenuScene:
     def handle(self, update, context):
         context.user_data['scene'] = self
         keyboard = [
-            ['Расписание мероприятия'],
-            ['Знакомства'],
-            ['Задать вопрос спикеру'],
-            ['Поддержать организаторов']
+            [
+                InlineKeyboardButton(
+                    '🗓 Расписание мероприятия',
+                    callback_data='schedule'
+                ),
+                InlineKeyboardButton(
+                    '🤝 Знакомства',
+                    callback_data='network'
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    '❓ Задать вопрос спикеру',
+                    callback_data='ask'
+                ),
+                InlineKeyboardButton(
+                    '💸 Поддержать организаторов',
+                    callback_data='donate'
+                )
+            ]
         ]
-
-        if update.effective_user.id in SPEAKER_IDS:
-            keyboard.append(['Посмотреть вопросы'])
-
-        markup = ReplyKeyboardMarkup(
-            keyboard,
-            resize_keyboard=True,
-            one_time_keyboard=False
+        user_id = update.effective_user.id
+        is_speaker = User.objects.filter(tg_id=user_id, role='speaker').exists()
+        if is_speaker:
+            keyboard.append([InlineKeyboardButton(
+                '👀 Посмотреть вопросы',
+                callback_data='show_questions'
+            )])
+        markup = InlineKeyboardMarkup(keyboard)
+        message = update.message or update.callback_query.message
+        message.reply_text(
+            '🎮 Меню бота',
+            reply_markup=markup
         )
 
-        update.message.reply_text('Выбирай', reply_markup=markup)
-
-        message = update.message or update.callback_query.message
-        message.reply_text('\u2060', reply_markup=markup)
-
-
-    def process(self, update, context):
-        text = update.message.text
-
-        if text == 'Расписание мероприятия':
+    def process_callback(self, update, context):
+        query = update.callback_query
+        if query.data == 'schedule':
             scene = SceneRouter.get('schedule')
+            query.answer()
+            query.message.delete()
             scene.handle(update, context)
-
-        elif text == 'Знакомства':
+        if query.data == 'network':
             scene = SceneRouter.get('connection')
+            query.answer()
+            query.message.delete()
             scene.handle(update, context)
-
-        elif text == 'Задать вопрос спикеру':
+        if query.data == 'ask':
             scene = SceneRouter.get('ask_question')
+            query.answer()
+            query.message.delete()
             scene.handle(update, context)
-
-        elif text == 'Поддержать организаторов':
+        if query.data == 'donate':
             scene = SceneRouter.get('donate')
-            scene.handle(update, context)
-
-        elif text == 'Посмотреть вопросы':
-            from .speaker_view import SpeakerQuestionViewerScene
-            scene = SpeakerQuestionViewerScene()
+            query.answer()
+            query.message.delete()
             scene.handle(update, context)

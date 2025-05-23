@@ -19,12 +19,14 @@ class ConnectionScene:
             self.process(update, context)
         else:
             keyboard_cancel = [
-                ['Отмена']
+                ['❌ Отмена']
             ]
             cancel_markup = ReplyKeyboardMarkup(keyboard_cancel)
             context.user_data['stage'] = 'about_me'
-            update.message.reply_text(
-                'Для начала напиши о себе.',
+            message = update.message or update.callback_query.message
+            message.reply_text(
+                '✍️ Для начала напиши о себе.\n' \
+                '👀 Твою анкету будут видеть другие пользователи',
                 reply_markup=cancel_markup
             )
 
@@ -34,7 +36,7 @@ class ConnectionScene:
         user = User.objects.get(tg_id=tg_id)
         if stage == 'about_me':
             text = update.message.text
-            if text == 'Отмена':
+            if text == '❌ Отмена':
                 scene = SceneRouter.get('main_menu')
                 scene.handle(update, context)
             else:
@@ -59,8 +61,8 @@ class ConnectionScene:
 
         elif stage == 'random_person':
             keyboard = [
-                ['Пропустить'],
-                ['Назад']
+                ['⏩ Пропустить'],
+                ['⏪ Назад']
             ]
             markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
             random_user = (
@@ -71,19 +73,22 @@ class ConnectionScene:
             )
             message = update.message or update.callback_query.message
             if random_user:
-                link_to_chat = (
-                    f'@{random_user.username}'
+                username = (
+                    f"@{random_user.username}"
                     if random_user.username
-                    else 'Пользователь не указал никнейм'
+                    else "❌ Никнейм не указан"
+                )
+
+                text = (
+                    f"🤝 *Вот кто-то интересный:*\n\n"
+                    f"{username}\n"
+                    f"*Имя:* {random_user.first_name}\n\n"
+                    f"*О себе:*\n_{random_user.about_me}_"
                 )
                 message.reply_text(
-                    f'''
-{link_to_chat}
-Вот кто-то интересный:
-
-{random_user.first_name}
-
-{random_user.about_me}''', reply_markup=markup
+                    text,
+                    reply_markup=markup,
+                    parse_mode='Markdown'
                 )
                 context.user_data['stage'] = 'person_found'
             else:
@@ -93,10 +98,10 @@ class ConnectionScene:
 
         elif stage == 'person_found':
             text = update.message.text
-            if text == 'Пропустить':
+            if text == '⏩ Пропустить':
                 context.user_data['stage'] = 'random_person'
                 self.process(update, context)
-            else:
+            elif text == '⏪ Назад':
                 scene = SceneRouter.get('main_menu')
                 scene.handle(update, context)
 
@@ -112,7 +117,7 @@ class ConnectionScene:
                 context.user_data['stage'] = 'random_person'
                 query.answer()
                 query.edit_message_reply_markup(reply_markup=None)
-                query.message.reply_text('Отлично! Начинайте общение!')
+                query.message.reply_text('Отлично! Начинайте общение! 🤝')
                 self.handle(update, context)
             else:
                 context.user_data['stage'] = 'about_me'
@@ -125,4 +130,4 @@ class ConnectionScene:
             context.user_data['stage'] = 'about_me'
             query.answer()
             query.edit_message_reply_markup(reply_markup=None)
-            query.message.reply_text('Заполните анкету заново')
+            query.message.reply_text('✍️ Заполните анкету заново')
