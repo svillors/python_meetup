@@ -13,6 +13,8 @@ from dotenv import load_dotenv
 from utils.init_django import init_django
 init_django()
 
+from meetapp.models import User
+
 from scenes.scene_router import SceneRouter
 from scenes.connection import ConnectionScene
 from scenes.donate import DonateScene
@@ -31,9 +33,24 @@ SceneRouter.scenes = {
 
 
 def start(update, context):
+    tg_user = update.effective_user
+    speaker_ids = context.bot_data.get('SPEAKER_IDS', [])
+
+    if tg_user.username:
+        role = 'speaker' if tg_user.id in speaker_ids else 'listener'
+        User.objects.get_or_create(
+            tg_id=tg_user.id,
+            defaults={
+                'first_name': tg_user.first_name or '',
+                'username': tg_user.username,
+                'role': role,
+            }
+        )
+
     update.message.reply_text('я бот, бизнес митапы бизнес деньги')
     scene = SceneRouter.get('main_menu')
     scene.handle(update, context)
+
 
 
 def universal_handler(update, context):
@@ -65,8 +82,13 @@ def payment_success(update, context):
 
 def main():
     load_dotenv()
+    
+    SPEAKER_IDS = list(map(int, os.getenv("SPEAKER_IDS", "").split(",")))
+
     updater = Updater(os.getenv('TG_BOT_TOKEN'), use_context=True)
     dispatcher = updater.dispatcher
+
+    dispatcher.bot_data['SPEAKER_IDS'] = SPEAKER_IDS
 
     dispatcher.add_handler(CommandHandler('start', start))
     dispatcher.add_handler(MessageHandler(Filters.text, universal_handler))
