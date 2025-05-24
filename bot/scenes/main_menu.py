@@ -65,3 +65,8 @@ class MainMenuScene:
             query.answer()
             query.message.delete()
             scene.handle(update, context)
+        if query.data == 'show_questions':
+            scene = SceneRouter.get('speaker_view')
+            query.answer()
+            query.message.delete()
+            scene.handle(update, context)

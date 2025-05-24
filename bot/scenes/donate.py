@@ -2,7 +2,7 @@ import re
 import os
 import random
 
-from telegram import LabeledPrice, ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import LabeledPrice, InlineKeyboardButton, InlineKeyboardMarkup
 from dotenv import load_dotenv
 
 from .scene_router import SceneRouter

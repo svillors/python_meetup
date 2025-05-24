@@ -19,6 +19,7 @@ from scenes.donate import DonateScene
 from scenes.main_menu import MainMenuScene
 from scenes.ask_question import AskQuestionScene
 from scenes.schedule import ScheduleScene
+from scenes.speaker_view import SpeakerQuestionViewerScene
 
 
 SceneRouter.scenes = {
@@ -26,7 +27,8 @@ SceneRouter.scenes = {
     'connection': ConnectionScene,
     'donate': DonateScene,
     'ask_question': AskQuestionScene,
-    'schedule': ScheduleScene
+    'schedule': ScheduleScene,
+    'speaker_view': SpeakerQuestionViewerScene
 }
 
 
