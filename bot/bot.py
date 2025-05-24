@@ -35,20 +35,20 @@ SceneRouter.scenes = {
 
 
 def start(update, context):
-
     tg_user = update.effective_user
-    speaker_ids = context.bot_data.get('SPEAKER_IDS', [])
+
+    defaults = {
+        'first_name': tg_user.first_name or '',
+        'role': 'listener',
+    }
 
     if tg_user.username:
-        role = 'speaker' if tg_user.id in speaker_ids else 'listener'
-        User.objects.get_or_create(
-            tg_id=tg_user.id,
-            defaults={
-                'first_name': tg_user.first_name or '',
-                'username': tg_user.username,
-                'role': role,
-            }
-        )
+        defaults['username'] = tg_user.username
+
+    User.objects.get_or_create(
+        tg_id=tg_user.id,
+        defaults=defaults
+    )
 
     update.message.reply_text(
         '''
