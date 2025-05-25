@@ -1,8 +1,11 @@
 from meetapp.models import User
 
+from .scene_router import SceneRouter
+
+
 class UnsubscribeScene:
     def handle(self, update, context):
-        from scenes.main_menu import MainMenuScene
+        scene = SceneRouter.get('main_menu')
 
         context.user_data['scene'] = self
         tg_id = update.effective_user.id
@@ -17,7 +20,4 @@ class UnsubscribeScene:
         else:
             message.reply_text("⚠️ Вы не зарегистрированы.")
 
-        MainMenuScene().handle(update, context)
-
-    def process(self, update, context):
-        pass
+        scene.handle(update, context)

@@ -1,5 +1,7 @@
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from django.db.models import Q
+from django.db import DataError
+from django.core.exceptions import ValidationError
 from meetapp.models import User
 
 from .scene_router import SceneRouter
@@ -109,8 +111,23 @@ class ConnectionScene:
         if data == 'confirm_about':
             about = context.user_data.get('about_me_text')
             if about:
-                user.about_me = about
-                user.save()
+                max_len = user._meta.get_field('about_me').max_length
+                if len(about) > max_len:
+                    query.answer(
+                        text=f'Максимум {max_len} символов. Сейчас {len(about)}.',
+                        show_alert=True
+                    )
+                    return
+                try:
+                    user.about_me = about
+                    user.save()
+                except (ValidationError, DataError):
+                    query.answer(
+                        text='Не удалось сохранить анкету 😕\n'
+                            'Попробуйте укоротить текст.',
+                        show_alert=True
+                    )
+                    return
                 context.user_data['stage'] = 'random_person'
                 query.answer()
                 query.edit_message_reply_markup(reply_markup=None)

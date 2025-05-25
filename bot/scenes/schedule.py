@@ -31,20 +31,21 @@ class ScheduleScene:
         scene = SceneRouter.get('main_menu')
         if query.data == 'schedule_today':
             today = timezone.localdate()
-            try:
-                meetup_today = Meetup.objects.filter(date=today).first()
+            meetup_today = Meetup.objects.filter(date=today).first()
+            if not meetup_today:
+                query.answer()
+                query.message.reply_text(
+                    'На сегодня мероприятий не назначено'
+                )
+                scene.handle(update, context)
+            else:
                 query.answer()
                 query.message.reply_text(
                     build_meetup_schedule(meetup_today),
                     parse_mode='Markdown'
                 )
-            except Meetup.DoesNotExist:
-                query.answer()
-                query.message.reply_text(
-                    'На сегодня мероприятий не назначено'
-                )
-            query.message.delete()
-            scene.handle(update, context)
+                query.message.delete()
+                scene.handle(update, context)
         if query.data == 'schedule_future':
             query.answer()
             query.message.delete()
@@ -54,11 +55,17 @@ class ScheduleScene:
                 .filter(date__gte=today)
                 .order_by('date', 'start_meetup')
             )[:5]
-            query.message.reply_text(
-                build_future_meetup_schedule(meetups),
-                parse_mode='Markdown'
-            )
-            scene.handle(update, context)
+            if not meetups:
+                query.message.reply_text(
+                    'Пока мероприятий не запланировано'
+                )
+                scene.handle(update, context)
+            else:
+                query.message.reply_text(
+                    build_future_meetup_schedule(meetups),
+                    parse_mode='Markdown'
+                )
+                scene.handle(update, context)
 
 
 def build_meetup_schedule(meetup):
@@ -88,7 +95,7 @@ def build_future_meetup_schedule(meetups):
     if not meetups:
         return "😕 Пока не запланировано ни одного мероприятия."
 
-    header = "📆 *Ближайшие мероприятия PythonMeetup:*\n\n"
+    header = "📆 *Ближайшие мероприятия:*\n\n"
     lines = []
 
     for meetup in meetups:

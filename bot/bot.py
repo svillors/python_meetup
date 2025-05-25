@@ -23,6 +23,9 @@ from scenes.ask_question import AskQuestionScene
 from scenes.schedule import ScheduleScene
 from scenes.speaker_view import SpeakerQuestionViewerScene
 from scenes.create_application import CreateApplicationScene
+from scenes.subscription import SubscriptionScene
+from scenes.unsubscribe import UnsubscribeScene
+from scenes.broadcast import BroadcastScene
 
 
 SceneRouter.scenes = {
@@ -32,25 +35,30 @@ SceneRouter.scenes = {
     'ask_question': AskQuestionScene,
     'schedule': ScheduleScene,
     'speaker_view': SpeakerQuestionViewerScene,
-    'create_application': CreateApplicationScene
+    'create_application': CreateApplicationScene,
+    'subscribe': SubscriptionScene,
+    'unsubscribe': UnsubscribeScene,
+    'broadcast': BroadcastScene
 }
 
 
 def start(update, context):
     tg_user = update.effective_user
+    user_exists = User.objects.filter(tg_id=tg_user).exists()
 
-    defaults = {
-        'first_name': tg_user.first_name or '',
-        'role': 'listener',
-    }
+    if not user_exists:
+        defaults = {
+            'first_name': tg_user.first_name or '',
+            'role': 'listener',
+        }
 
-    if tg_user.username:
-        defaults['username'] = tg_user.username
+        if tg_user.username:
+            defaults['username'] = tg_user.username
 
-    User.objects.get_or_create(
-        tg_id=tg_user.id,
-        defaults=defaults
-    )
+        User.objects.get_or_create(
+            tg_id=tg_user.id,
+            defaults=defaults
+        )
 
     update.message.reply_text(
         '''
@@ -140,8 +148,12 @@ def payment_success(update, context):
 
 def main():
     load_dotenv()
-    
-    SPEAKER_IDS = list(map(int, os.getenv("SPEAKER_IDS", "").split(",")))
+
+    SPEAKER_IDS = (
+        User.objects
+        .filter(role='listener')
+        .values_list('tg_id', flat=True)
+    )
 
     updater = Updater(os.getenv('TG_BOT_TOKEN'), use_context=True)
     dispatcher = updater.dispatcher

@@ -30,7 +30,7 @@ class MainMenuScene:
             ],
             [
                 InlineKeyboardButton(
-                    'Стать спикером',
+                    '🎤 Стать спикером',
                     callback_data='application'
                 )
             ]
@@ -38,24 +38,26 @@ class MainMenuScene:
         user_id = update.effective_user.id
         user = User.objects.filter(tg_id=user_id).first()
 
-        is_speaker = User.objects.filter(tg_id=user_id, role='speaker').exists()
+        is_speaker = (
+            User.objects.
+            filter(tg_id=user_id, role='speaker')
+            .exists()
+        )
+        if user and user.is_subscribed:
+            keyboard.append([InlineKeyboardButton(
+                '🚫 Отписаться от рассылки',
+                callback_data='unsubscribe'
+            )])
+        elif user:
+            keyboard.append([InlineKeyboardButton(
+                '🔔 Подписаться на мероприятия',
+                callback_data='subscribe'
+            )])
         if is_speaker:
             keyboard.append([InlineKeyboardButton(
                 '👀 Посмотреть вопросы',
                 callback_data='show_questions'
             )])
-
-        if user and user.is_subscribed:
-            keyboard.append([InlineKeyboardButton(
-                '🚫 Отписаться от рассылки', 
-                callback_data='unsubscribe'
-            )])
-        elif user:
-            keyboard.append([InlineKeyboardButton(
-                '🔔 Подписаться на мероприятия', 
-                callback_data='subscribe'
-            )])
-
         if user.is_admin:
             keyboard.append([InlineKeyboardButton(
                 '📢 Сделать рассылку', 
@@ -104,23 +106,22 @@ class MainMenuScene:
             scene.handle(update, context)
 
         if query.data == 'subscribe':
-            from .subscription import SubscriptionScene
-            scene = SubscriptionScene()
+            scene = SceneRouter.get('subscribe')
+            query.answer()
             query.message.delete()
             scene.handle(update, context)
 
         if query.data == 'broadcast':
-            from .broadcast import BroadcastScene
-            scene = BroadcastScene()
+            scene = SceneRouter.get('broadcast')
+            query.answer()
             query.message.delete()
             scene.handle(update, context)
 
         if query.data == 'unsubscribe':
-            from .unsubscribe import UnsubscribeScene
-            scene = UnsubscribeScene()
+            scene = SceneRouter.get('unsubscribe')
+            query.answer()
             query.message.delete()
             scene.handle(update, context)
-
 
         if query.data == 'application':
             scene = SceneRouter.get('create_application')
