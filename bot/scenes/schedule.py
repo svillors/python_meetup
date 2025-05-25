@@ -32,7 +32,7 @@ class ScheduleScene:
         if query.data == 'schedule_today':
             today = timezone.localdate()
             try:
-                meetup_today = Meetup.objects.get(date=today)
+                meetup_today = Meetup.objects.filter(date=today).first()
                 query.answer()
                 query.message.reply_text(
                     build_meetup_schedule(meetup_today),

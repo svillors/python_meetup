@@ -118,6 +118,9 @@ class MainMenuScene:
         if query.data == 'unsubscribe':
             from .unsubscribe import UnsubscribeScene
             scene = UnsubscribeScene()
+            query.message.delete()
+            scene.handle(update, context)
+
 
         if query.data == 'application':
             scene = SceneRouter.get('create_application')
