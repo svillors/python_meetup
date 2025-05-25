@@ -1,8 +1,4 @@
 from django.contrib import admin
-<<<<<<< Updated upstream
-
-# Register your models here.
-=======
 from meetapp.models import User, Speaker, Event, Meetup, Question, Application
 
 
@@ -55,4 +51,3 @@ class QuestionAdmin(admin.ModelAdmin):
 @admin.register(Application)
 class ApplicationAdmin(admin.ModelAdmin):
     list_display = ['applicant', 'text']
->>>>>>> Stashed changes
