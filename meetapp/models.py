@@ -31,6 +31,15 @@ class User(models.Model):
         default='listener',
         max_length=10
     )
+    is_subscribed = models.BooleanField(
+        default=False,
+        verbose_name='Подписан на уведомления о будущих мероприятиях'
+    )
+    is_admin = models.BooleanField(
+        default=False,
+        verbose_name='Организатор (может делать рассылки)'
+    )
+
 
     class Meta:
         verbose_name = 'Пользователь'
