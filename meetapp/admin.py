@@ -1,5 +1,5 @@
 from django.contrib import admin
-from meetapp.models import User, Speaker, Event, Meetup, Question
+from meetapp.models import User, Speaker, Event, Meetup, Question, Application
 
 
 class SpeakerInline(admin.StackedInline):
@@ -46,3 +46,8 @@ class MeetupAdmin(admin.ModelAdmin):
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ['asker', 'event', 'time']
     ordering = ['-time']
+
+
+@admin.register(Application)
+class ApplicationAdmin(admin.ModelAdmin):
+    list_display = ['applicant', 'text']

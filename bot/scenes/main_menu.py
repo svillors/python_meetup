@@ -27,6 +27,12 @@ class MainMenuScene:
                     '💸 Поддержать организаторов',
                     callback_data='donate'
                 )
+            ],
+            [
+                InlineKeyboardButton(
+                    'Стать спикером',
+                    callback_data='application'
+                )
             ]
         ]
         user_id = update.effective_user.id
@@ -112,5 +118,9 @@ class MainMenuScene:
         if query.data == 'unsubscribe':
             from .unsubscribe import UnsubscribeScene
             scene = UnsubscribeScene()
+
+        if query.data == 'application':
+            scene = SceneRouter.get('create_application')
+            query.answer()
             query.message.delete()
             scene.handle(update, context)

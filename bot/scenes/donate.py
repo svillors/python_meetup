@@ -91,7 +91,7 @@ class DonateScene:
 
 def create_donate(update, context, money_amount, provider_token):
     title = "Поддержка проекта"
-    description = "Пожертвование на развития нашего сообщества"
+    description = "Пожертвование на развитие нашего сообщества"
     payload = f"{update.effective_chat.id}" + f'{random.randint(1, 99999)}'
     provider_token = provider_token
     currency = "RUB"

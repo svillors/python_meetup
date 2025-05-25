@@ -168,3 +168,24 @@ class Question(models.Model):
 
     def __str__(self):
         return f'Вопрос от {self.asker}, на событие {self.event}'
+
+
+class Application(models.Model):
+
+    text = models.TextField(
+        max_length=200,
+        verbose_name='Текст заявки'
+    )
+
+    applicant = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Подающий'
+    )
+
+    class Meta:
+        verbose_name = 'Заявка'
+        verbose_name_plural = 'Заявки'
+
+    def __str__(self):
+        return f'Заявка от {self.applicant}, на роль спикера'

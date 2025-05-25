@@ -22,6 +22,7 @@ from scenes.main_menu import MainMenuScene
 from scenes.ask_question import AskQuestionScene
 from scenes.schedule import ScheduleScene
 from scenes.speaker_view import SpeakerQuestionViewerScene
+from scenes.create_application import CreateApplicationScene
 
 
 SceneRouter.scenes = {
@@ -30,7 +31,8 @@ SceneRouter.scenes = {
     'donate': DonateScene,
     'ask_question': AskQuestionScene,
     'schedule': ScheduleScene,
-    'speaker_view': SpeakerQuestionViewerScene
+    'speaker_view': SpeakerQuestionViewerScene,
+    'create_application': CreateApplicationScene
 }
 
 
@@ -100,6 +102,11 @@ def help_command(update, context):
   • Кнопка «💸 Донат» ведёт на платёжку (любая сумма).
 
   • Любая сумма помогает двигать наше сообщество вперед!
+
+🔈 Стать спикером
+  • Нажав на эту кнопку,ты можешь оставить заявку, чтобы самому стать спикером.
+
+  • Только напиши немного информации о себе, и своих талантах, и организаторы свяжутся с тобой!
 '''
     update.message.reply_text(text)
 
