@@ -86,8 +86,6 @@ class Question(models.Model):
         verbose_name = 'Вопрос'
         verbose_name_plural = 'Вопросы'
 
-<<<<<<< Updated upstream
-=======
     def __str__(self):
         return f'Вопрос от {self.asker}, на событие {self.event}'
 
@@ -111,4 +109,3 @@ class Application(models.Model):
 
     def __str__(self):
         return f'Заявка от {self.applicant}, на роль спикера'
->>>>>>> Stashed changes
