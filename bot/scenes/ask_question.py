@@ -52,7 +52,7 @@ class AskQuestionScene:
             ]
             markup = InlineKeyboardMarkup(keyboard)
             update.message.reply_text(
-                '🎤 Отправить этот вопрос докладчиу?',
+                '🎤 Отправить этот вопрос докладчику?',
                 reply_markup=markup
             )
 
@@ -75,7 +75,7 @@ class AskQuestionScene:
                     asker=user
                 )
                 query.answer(
-                    text="💡 Вопрос усешно отправлен!",
+                    text="💡 Вопрос успешно отправлен!",
                     show_alert=True
                 )
                 query.message.delete()

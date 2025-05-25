@@ -1,12 +1,11 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from django.utils import timezone
 from meetapp.models import Application, User
 
 from .scene_router import SceneRouter
 
 
 class CreateApplicationScene:
- 
+
     def handle(self, update, context):
         context.user_data['scene'] = self
         message = update.message or update.callback_query.message
