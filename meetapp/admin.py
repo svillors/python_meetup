@@ -1,5 +1,5 @@
 from django.contrib import admin
-from meetapp.models import User, Speaker, Event, Meetup, Question, Application
+from meetapp.models import User, Speaker, Event, Meetup, Question, Application, DonationMessage
 
 
 class SpeakerInline(admin.StackedInline):
@@ -51,3 +51,8 @@ class QuestionAdmin(admin.ModelAdmin):
 @admin.register(Application)
 class ApplicationAdmin(admin.ModelAdmin):
     list_display = ['applicant', 'text']
+
+
+@admin.register(DonationMessage)
+class DonationMessageAdmin(admin.ModelAdmin):
+    list_display = ['amount', 'user', 'time']

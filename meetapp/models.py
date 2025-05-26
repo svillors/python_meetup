@@ -189,3 +189,19 @@ class Application(models.Model):
 
     def __str__(self):
         return f'Заявка от {self.applicant}, на роль спикера'
+
+
+class DonationMessage(models.Model):
+    user = models.ForeignKey(
+        User,
+        verbose_name='Пользователь, который задонатил',
+        related_name='donations',
+        on_delete=models.CASCADE
+    )
+    amount = models.FloatField(
+        'Сумма доната в рублях'
+    )
+    time = models.DateTimeField(
+        'Время доната',
+        auto_now_add=True
+    )

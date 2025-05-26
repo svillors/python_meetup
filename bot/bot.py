@@ -9,11 +9,12 @@ from telegram.ext import (
     PreCheckoutQueryHandler
 )
 from dotenv import load_dotenv
+from django.db import transaction
 
 from utils.init_django import init_django
 init_django()
 
-from meetapp.models import User
+from meetapp.models import User, DonationMessage
 
 from scenes.scene_router import SceneRouter
 from scenes.connection import ConnectionScene
@@ -143,6 +144,17 @@ def precheckout_handler(update, context):
 
 
 def payment_success(update, context):
+    sp = update.message.successful_payment
+    user = User.objects.filter(tg_id=update.effective_user.id).first()
+    if not user:
+        update.message.reply_text('Спасибо! (но вас нет в БД 🤷‍♂️)')
+        return
+
+    amount_rub = sp.total_amount / 100
+    with transaction.atomic():
+        DonationMessage.objects.create(user=user, amount=amount_rub)
+
+    update.message.reply_text(f'🙏 Спасибо за поддержку: {amount_rub:.2f} ₽')
     update.message.reply_text('Спасибо за поддержку!')
 
 
