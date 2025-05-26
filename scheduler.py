@@ -2,6 +2,7 @@ import os
 import django
 import time
 from datetime import datetime, timedelta
+from django.utils import timezone
 
 from dotenv import load_dotenv
 from telegram import Bot
@@ -15,7 +16,7 @@ load_dotenv()
 bot = Bot(token=os.getenv("TG_BOT_TOKEN"))
 
 def send_meetup_notifications():
-    now = datetime.now()
+    now = timezone.localtime()
     upcoming_window_start = now + timedelta(minutes=2)
     upcoming_window_end = now + timedelta(minutes=3)
 
