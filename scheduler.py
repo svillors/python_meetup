@@ -23,9 +23,13 @@ def send_meetup_notifications():
     meetups = Meetup.objects.all()
 
     for meetup in meetups:
-        meetup_datetime = datetime.combine(meetup.date, meetup.start_meetup)
+        naive_dt = datetime.combine(meetup.date, meetup.start_meetup)
+        meetup_dt = timezone.make_aware(
+            naive_dt,
+            timezone.get_current_timezone()
+        )
 
-        if upcoming_window_start <= meetup_datetime < upcoming_window_end:
+        if upcoming_window_start <= meetup_dt < upcoming_window_end:
             text = (
                 f"🔔 Скоро начнётся мероприятие: {meetup.title}\n"
                 f"📍 Место: {meetup.location}\n"
