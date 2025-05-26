@@ -19,7 +19,7 @@ class ConnectionScene:
             cancel_markup = InlineKeyboardMarkup([
                 [InlineKeyboardButton(
                     '❌ Отмена',
-                    callback_data='decline'
+                    callback_data='about_cancel'
                 )]
             ])
             context.user_data['stage'] = 'about_me'
@@ -106,7 +106,7 @@ class ConnectionScene:
         if data == 'about_cancel':
             query.answer()
             query.message.delete()
-            return main.handle(update, context)
+            main.handle(update, context)
 
         if data == 'confirm_about':
             about = context.user_data.get('about_me_text')
@@ -156,9 +156,3 @@ class ConnectionScene:
             query.answer()
             query.message.delete()
             main.handle(update, context)
-
-        elif data == 'decline':
-            context.user_data['stage'] = 'about_me'
-            query.answer()
-            query.message.delete()
-            self.handle(update, context)
