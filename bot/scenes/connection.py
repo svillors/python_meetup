@@ -3,8 +3,10 @@ from django.db.models import Q
 from django.db import DataError
 from django.core.exceptions import ValidationError
 from meetapp.models import User
-
+import os
 from .scene_router import SceneRouter
+from telegram import Bot
+from dotenv import load_dotenv
 
 
 class ConnectionScene:
@@ -121,6 +123,18 @@ class ConnectionScene:
                 try:
                     user.about_me = about
                     user.save()
+                    load_dotenv()
+                    bot = Bot(token=os.getenv("TG_BOT_TOKEN"))
+
+                    others = User.objects.filter(~Q(tg_id=user.tg_id), ~Q(about_me=''))
+                    for other in others:
+                        try:
+                            bot.send_message(
+                                chat_id=other.tg_id,
+                                text="🆕 Кто-то новый заполнил анкету! Проверь, может это твой будущий собеседник 🤝"
+                            )
+                        except Exception as e:
+                            print(f"❌ Не удалось отправить {other.username}: {e}")
                 except (ValidationError, DataError):
                     query.answer(
                         text='Не удалось сохранить анкету 😕\n'

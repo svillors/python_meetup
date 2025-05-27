@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class User(models.Model):
@@ -194,14 +195,17 @@ class Application(models.Model):
 class DonationMessage(models.Model):
     user = models.ForeignKey(
         User,
-        verbose_name='Пользователь, который задонатил',
+        verbose_name=_('Пользователь, который задонатил'),
         related_name='donations',
         on_delete=models.CASCADE
     )
-    amount = models.FloatField(
-        'Сумма доната в рублях'
-    )
-    time = models.DateTimeField(
-        'Время доната',
-        auto_now_add=True
-    )
+    amount = models.FloatField(_('Сумма доната в рублях'))
+    time = models.DateTimeField(_('Время доната'), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _('Сообщение о донате')
+        verbose_name_plural = _('Сообщения о донатах')
+        ordering = ['-time']
+
+    def __str__(self):
+        return f'{self.user} задонатил {self.amount}₽ в {self.time.strftime("%H:%M %d.%m.%Y")}'
